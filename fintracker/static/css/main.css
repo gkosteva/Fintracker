@@ -12,3 +12,12 @@
         font-size: 3.5rem;
     }
 }
+
+.showPasswordToogle {
+    cursor: pointer;
+    transition: all;
+}
+
+.showPasswordToogle:hover {
+    transform: scale(1.2);
+}
