@@ -7,7 +7,7 @@ from validate_email import validate_email
 from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.urls import reverse
-from django.utils.encoding import force_bytes, DjangoUnicodeDecodeError
+from django.utils.encoding import force_bytes, force_str, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from .utils import token_generator
@@ -87,4 +87,24 @@ class RegistrationView(View):
 
 class VerificationView(View):
     def get(self, request, uidb64, token):
+        try:
+            id = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=id)
+            if not token_generator.check_token(user, token):
+                return redirect('login' + '?message=' + 'User already activated!')
+            if user.is_actie:
+                return redirect('login')
+
+            user.is_active = True
+            user.save()
+
+            messages.success(request, 'Account was activated successfully! ')
+            return redirect('login')
+        except Exception as ex:
+            pass
         return redirect('login')
+
+
+class LoginView(View):
+    def get(self, request):
+        return render(request, 'authentication/login.html')
