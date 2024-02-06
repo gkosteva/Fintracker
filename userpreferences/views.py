@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 import os
 import json
@@ -6,6 +7,7 @@ from .models import UserPreferences
 from django.contrib import messages
 
 
+@login_required(login_url='/authentication/login')
 def index(request):
     currency_data = []
     file_path = os.path.join(settings.BASE_DIR, 'currencies.json')
