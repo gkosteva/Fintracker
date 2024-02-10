@@ -27,7 +27,11 @@ def index(request):
     paginator = Paginator(expenses, 2)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
-    currency=UserPreferences.objects.get(user=request.user).currency
+    try:
+        currency = UserPreferences.objects.get(user=request.user).currency
+    except Exception as identifier:
+        currency = "Not set default currency"
+        messages.info(request, "Please go to General Settings to set your currency")
     context = {
         'expenses': expenses,
         'page_obj': page_obj,
