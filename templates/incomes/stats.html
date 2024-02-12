@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    {% include 'partials/_messages.html' %}
+    <div class="row">
+        <div class="col-md-10">
+            <nav aria-label="breadcrump">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'stats_view' %}">Income Summary</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Summary</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div id="jan" class="btn btn-primary">January</div>
+    <div id="feb" class="btn btn-primary">February</div>
+    <div class="btn btn-primary" id="march">March</div>
+    <div class="btn btn-primary" id="april">April</div>
+    <div class="btn btn-primary" id="may">May</div>
+    <div class="btn btn-primary" id="june">June</div>
+    <div class="btn btn-primary" id="july">July</div>
+    <div class="btn btn-primary" id="august">August</div>
+    <div class="btn btn-primary" id="sept">September</div>
+    <div class="btn btn-primary" id="oct">October</div>
+    <div class="btn btn-primary" id="nov">November</div>
+    <div class="btn btn-primary" id="dec">December</div>
+    <div id="container" style="width:100%; height:400px;"></div>
+    <div class="container mt-5" id="noDataFound" style="display: none;">No data found for this month</div>
+</div>
+<script src="{% static 'js/statsIncome.js ' %}"></script>
+{% endblock content %}

@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 import json
 from django.http import JsonResponse
 from userpreferences.models import UserPreferences
+from datetime import datetime, date, timedelta
 
 
 # Create your views here.
@@ -97,3 +98,51 @@ def income_delete(request, id):
     income.delete()
     messages.success(request, "Income successfully removed!")
     return redirect('incomes')
+
+
+@login_required(login_url='/authentication/login')
+def income_category_summary(request, month):
+    def get_date(month_name):
+        current_year = date.today().year
+        month_date = datetime.strptime(month_name, '%B')
+        month = month_date.month
+        day = 1
+        return date(current_year, month, day)
+
+    def get_first_day_of_next_month(month_name):
+        month_date = datetime.strptime(month_name, '%B')
+        next_month_date = month_date + timedelta(days=31)
+        next_month = next_month_date.month
+
+        return next_month
+
+    next_mont = get_first_day_of_next_month(month)
+    if next_mont == 1:
+        end_date = date(date.today().year + 1, next_mont, 1)
+    else:
+        end_date = date(date.today().year, next_mont, 1)
+    month_date = get_date(month)
+    income = Income.objects.filter(owner=request.user, date__gte=month_date, date__lte=end_date)
+    final_rep = {}
+
+    def get_source(income):
+        return income.source
+
+    def get_income_source_amount(source):
+        amount = 0
+        filtered_by_source = income.filter(source=source)
+        for item in filtered_by_source:
+            amount += item.amount
+        return amount
+
+    source_list = list(set(map(get_source, income)))
+    for x in income:
+        for y in source_list:
+            final_rep[y] = get_income_source_amount(y)
+
+    return JsonResponse({month: final_rep}, safe=False)
+
+
+@login_required(login_url='/authentication/login')
+def stats_view(request):
+    return render(request, "incomes/stats.html")

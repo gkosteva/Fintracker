@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 import json
 from django.http import JsonResponse
 from userpreferences.models import UserPreferences
+from datetime import datetime, date, timedelta
 
 
 # Create your views here.
@@ -100,3 +101,51 @@ def expense_delete(request, id):
     expense.delete()
     messages.success(request, "Expense successfully removed!")
     return redirect('expenses')
+
+
+@login_required(login_url='/authentication/login')
+def expense_category_summary(request, month):
+    def get_date(month_name):
+        current_year = date.today().year
+        month_date = datetime.strptime(month_name, '%B')
+        month = month_date.month
+        day = 1
+        return date(current_year, month, day)
+
+    def get_first_day_of_next_month(month_name):
+        month_date = datetime.strptime(month_name, '%B')
+        next_month_date = month_date + timedelta(days=31)
+        next_month = next_month_date.month
+
+        return next_month
+
+    next_mont = get_first_day_of_next_month(month)
+    if next_mont == 1:
+        end_date = date(date.today().year + 1, next_mont, 1)
+    else:
+        end_date = date(date.today().year, next_mont, 1)
+    month_date = get_date(month)
+    expenses = Expense.objects.filter(owner=request.user, date__gte=month_date, date__lte=end_date)
+    final_rep = {}
+
+    def get_category(expense):
+        return expense.category
+
+    def get_expense_category_amount(category):
+        amount = 0
+        filtered_by_category = expenses.filter(category=category)
+        for item in filtered_by_category:
+            amount += item.amount
+        return amount
+
+    category_list = list(set(map(get_category, expenses)))
+    for x in expenses:
+        for y in category_list:
+            final_rep[y] = get_expense_category_amount(y)
+
+    return JsonResponse({month: final_rep}, safe=False)
+
+
+@login_required(login_url='/authentication/login')
+def stats_view(request):
+    return render(request, "expenses/stats.html")
