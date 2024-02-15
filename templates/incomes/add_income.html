@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="col-md-10">
+        <nav aria-label="breadcrump">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="">Incomes</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Add income</li>
+            </ol>
+        </nav>
+
+
+        <div class="card">
+            <div class="card-body">
+                <form action="{% url 'add-incomes'  %}" method="post">
+                    {% csrf_token %}
+                    {% include 'partials/_messages.html' %}
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input type="text" class="form-control form-control-sm" name="amount"
+                               value="{{values.amount}}">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" class="form-control form-control-sm" name="description"
+                               value="{{values.description}}">
+                    </div>
+                    <div class="form-group">
+                        <label>Source</label>
+                        <select class="form-control" name="source">
+                            {% for source in sources %}
+                            <option name="source" value="{{source.name}}">{{source.name}}</option>
+                            {% endfor%}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Date of income</label>
+                        <input type="date" class="form-control form-control-sm" name="income_date"
+                               value="{{values.income_date}}">
+                    </div>
+                    <input type="submit" value="Submit" class="btn btn-primary btn-primary-sm">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
