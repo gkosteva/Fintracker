@@ -22,8 +22,7 @@ FinTracker is a web application designed to help users track their expenses and 
 To use FinTracker, follow these steps:
 
 1. **Clone the Repository**: Clone the FinTracker repository to your local machine.
-2. **Install Dependencies**: Install the necessary dependencies using `pip install -r requirements.txt`.
+2. **Install Dependencies**: Install the necessary dependencies. 
 3. **Database Setup**: Set up the database according to the provided configuration in `settings.py`.
-4. **Database Setup**: Configure your .env file 
 5. **Run the Server**: Start the Django development server using `python manage.py runserver`.
 6. **Access the Application**: Navigate to the provided URL in your web browser to access FinTracker.
