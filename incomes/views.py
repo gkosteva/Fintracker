@@ -57,6 +57,10 @@ def add_income(request):
             messages.error(request, "Amount should not be empty!")
             return render(request, 'incomes/add_income.html', context)
 
+        if not date:
+            messages.error(request, "Please enter date!")
+            return render(request, 'incomes/add_income.html', context)
+
         Income.objects.create(owner=request.user, amount=amount, description=description, date=date, source=source)
         messages.success(request, "Income successfully created!")
         return redirect('incomes')

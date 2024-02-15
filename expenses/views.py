@@ -60,6 +60,10 @@ def add_expense(request):
             messages.error(request, "Amount should not be empty!")
             return render(request, 'expenses/add_expense.html', context)
 
+        if not date:
+            messages.error(request, "Please enter date!")
+            return render(request, 'expenses/add_expense.html', context)
+
         Expense.objects.create(owner=request.user, amount=amount, description=description, date=date, category=category)
         messages.success(request, "Expense successfully created!")
         return redirect('expenses')

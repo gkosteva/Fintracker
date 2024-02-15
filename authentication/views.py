@@ -18,7 +18,6 @@ import threading
 
 # Create your views here.
 
-
 class EmailValidationView(View):
     def post(self, request):
         data = json.loads(request.body)
@@ -94,7 +93,7 @@ class RegistrationView(View):
         return render(request, 'authentication/register.html')
 
 
-class VerificationView(View):
+class VerificationView(View):  #not tested yet
     def get(self, request, uidb64, token):
         try:
             id = force_str(urlsafe_base64_decode(uidb64))
@@ -111,7 +110,7 @@ class VerificationView(View):
             messages.success(request, 'Account activated successfully')
             return redirect('login')
 
-        except Exception as ex:
+        except Exception:
             pass
 
         return redirect('login')
